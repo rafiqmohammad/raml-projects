@@ -1,0 +1,57 @@
+#%RAML 0.8
+title: ExploreoAuth
+version: v1
+baseUri: http://localhost:8081/testoauth
+securedBy: [oauth_2_0]
+securitySchemes:
+    - oauth_2_0:
+        description: |
+            This supports OAuth 2.0 for authenticating all API requests.
+        type: OAuth 2.0
+        describedBy:
+            headers:
+                Authorization:
+                    description: |
+                       Used to send a valid OAuth 2 access token. Do not use
+                       with the "access_token" query string parameter.
+                    type: string
+            queryParameters:
+                access_token:
+                    description: |
+                       Used to send a valid OAuth 2 access token. Do not use together with
+                       the "Authorization" header
+                    type: string
+            responses:
+                401:
+                    description: |
+                        Bad or expired token. This can happen if the user or Dropbox
+                        revoked or expired an access token. To fix, you should re-
+                        authenticate the user.
+                403:
+                    description: |
+                        Bad OAuth request (wrong consumer key, bad nonce, expired
+                        timestamp...). Unfortunately, re-authenticating the user won't help here.
+                404:
+                  description: Unauthorized
+        settings:
+          authorizationUri: org/oauth/authorize
+          accessTokenUri: org/oauth/token
+          authorizationGrants: [code,token]
+          scopes:
+            - "READ_RESOURCE"
+            - "POST_RESOURCE"
+mediaType: application/json
+/employee:
+  get:
+    description:
+      This is a Get Call which throws some response in json.
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "empcode" : 1,
+                "ename": "employee", 
+                "company" : "org"
+              }
